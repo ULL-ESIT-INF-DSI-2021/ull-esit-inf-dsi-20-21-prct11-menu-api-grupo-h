@@ -1,6 +1,7 @@
 import * as express from 'express';
 import {Ingredient} from '../models/ingredientsModel';
 import {Course} from '../models/coursesModel';
+import {Menu} from '../models/menusModel';
 import '../db/mongoose';
 
 export const deleteRouter = express.Router();
@@ -74,6 +75,41 @@ deleteRouter.delete('/courses/:id', async (req, res) => {
       });
     }
     return res.send(course);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+// Menus by name
+deleteRouter.delete('/menus', async (req, res) => {
+  if (!req.query.name) {
+    return res.status(400).send({
+      error: 'A name must be provided',
+    });
+  }
+  try {
+    const menu = await Menu.findOneAndDelete({name: req.query.name.toString()});
+    if (!menu) {
+      return res.status(404).send({
+        error: 'The menu has not been found',
+      });
+    }
+    return res.send(menu);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+// Menus by ID
+deleteRouter.delete('/menus/:id', async (req, res) => {
+  try {
+    const menu = await Menu.findByIdAndDelete(req.params.id);
+    if (!menu) {
+      return res.status(404).send({
+        error: 'The menu has not been found',
+      });
+    }
+    return res.send(menu);
   } catch (error) {
     return res.status(400).send(error);
   }

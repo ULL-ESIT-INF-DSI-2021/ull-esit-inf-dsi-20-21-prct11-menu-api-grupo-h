@@ -1,7 +1,9 @@
 import * as express from 'express';
+import {Course, CourseInterface} from '../models/coursesModel';
 import {Ingredient, IngredientInterface} from '../models/ingredientsModel';
-import {Course} from '../models/coursesModel';
 import {calculateMacronutrients, predominantGroup, totalPrice} from '../utilities/courses';
+import {nutritionalComposition, getFoodList, calculatePrice, validate} from '../utilities/menus';
+import {Menu} from '../models/menusModel';
 import '../db/mongoose';
 
 export const postRouter = express.Router();
@@ -57,6 +59,53 @@ postRouter.post('/courses', async (req, res) => {
     const course = new Course(correctCourse);
     await course.save();
     return res.status(201).send(course);
+  } catch (error) {
+    return res.status(400).send(error);
+  }
+});
+
+// Menus by name
+postRouter.post('/menus', async (req, res) => {
+  const menuObject = req.body;
+  if (!menuObject.name || !menuObject.courses) {
+    return res.status(400).send({
+      error: 'One of the properties required to create a menu has not been defined',
+    });
+  }
+  const arrayCourses: CourseInterface[] = [];
+  for (let i: number = 0; i < menuObject.courses.length; i++) {
+    const filter = {name: menuObject.courses[i]};
+    const courseCorrect = await Course.findOne(filter);
+    if (courseCorrect != null) {
+      arrayCourses.push(courseCorrect);
+    } else {
+      return res.status(404).send({
+        error: 'An course is not found in the database',
+      });
+    }
+  }
+
+  if (!validate(arrayCourses)) {
+    return res.status(400).send({
+      error: 'A menu must include one course from each category or at least three of them',
+    });
+  }
+
+  const macronutrients = nutritionalComposition(arrayCourses);
+  const correctMenu = {
+    name: menuObject.name,
+    carboHydrates: macronutrients[0],
+    proteins: macronutrients[1],
+    lipids: macronutrients[2],
+    courses: arrayCourses,
+    foodGroupList: getFoodList(arrayCourses),
+    price: calculatePrice(arrayCourses),
+  };
+
+  try {
+    const menu = new Menu(correctMenu);
+    await menu.save();
+    return res.status(201).send(menu);
   } catch (error) {
     return res.status(400).send(error);
   }

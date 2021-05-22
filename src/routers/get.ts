@@ -1,6 +1,7 @@
 import * as express from 'express';
 import {Ingredient} from '../models/ingredientsModel';
 import {Course} from '../models/coursesModel';
+import {Menu} from '../models/menusModel';
 import '../db/mongoose';
 
 export const getRouter = express.Router();
@@ -76,6 +77,52 @@ getRouter.get('/courses/:id', async (req, res) => {
     }
 
     return res.send(course);
+  } catch (error) {
+    return res.status(500).send(error);
+  }
+});
+
+// Menus by name
+getRouter.get('/menus', async (req, res) => {
+  const filter = req.query.name?{name: req.query.name.toString()}:{};
+
+  try {
+    const menu = await Menu.findOne(filter).populate({
+      path: "courses",
+      populate: {
+        path: "ingredients",
+      },
+    });
+
+    if (!menu) {
+      return res.status(404).send({
+        error: 'The menu is not in the database',
+      });
+    }
+
+    return res.send(menu);
+  } catch (error) {
+    return res.status(500).send(error);
+  }
+});
+
+// Menus by ID
+getRouter.get('/menus/:id', async (req, res) => {
+  try {
+    const menu = await Menu.findById(req.params.id).populate({
+      path: "courses",
+      populate: {
+        path: "ingredients",
+      },
+    });
+
+    if (!menu) {
+      return res.status(404).send({
+        error: 'The menu is not in the database',
+      });
+    }
+
+    return res.send(menu);
   } catch (error) {
     return res.status(500).send(error);
   }

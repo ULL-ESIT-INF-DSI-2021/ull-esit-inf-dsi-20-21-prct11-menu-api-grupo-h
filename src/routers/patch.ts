@@ -1,7 +1,10 @@
+
 import * as express from 'express';
-import {Ingredient, IngredientInterface} from '../models/ingredientsModel';
-import {Course} from '../models/coursesModel';
+import {Course, CourseInterface} from '../models/coursesModel';
 import {calculateMacronutrients, predominantGroup, totalPrice} from '../utilities/courses';
+import {Ingredient, IngredientInterface} from '../models/ingredientsModel';
+import {nutritionalComposition, getFoodList, calculatePrice, validate} from '../utilities/menus';
+import {Menu} from '../models/menusModel';
 import '../db/mongoose';
 
 
@@ -108,6 +111,74 @@ patchRouter.patch('/courses', async (req, res) => {
           });
         } else {
           return res.send(course);
+        }
+      } catch (error) {
+        return res.status(400).send(error);
+      }
+    }
+  }
+});
+
+// Menus by name
+patchRouter.patch('/menus', async (req, res) => {
+  if (!req.query.name) {
+    return res.status(400).send({
+      error: 'A name must be provided',
+    });
+  } else {
+    const allowedUpdates = ['name', 'courses'];
+    const actualUpdates = Object.keys(req.body);
+    const isValidUpdate =
+      actualUpdates.every((update) => allowedUpdates.includes(update));
+
+    if (!isValidUpdate) {
+      return res.status(400).send({
+        error: 'Update is not permitted',
+      });
+    } else {
+      const menuObject = req.body;
+      if (menuObject.courses) {
+        const arrayCourses: CourseInterface[] = [];
+        for (let i: number = 0; i < menuObject.courses.length; i++) {
+          const filter = {name: menuObject.courses[i]};
+          const courseCorrect = await Course.findOne(filter);
+          if (courseCorrect != null) {
+            arrayCourses.push(courseCorrect);
+          } else {
+            return res.status(404).send({
+              error: 'A course is not found in the database',
+            });
+          }
+        }
+
+        if (!validate(arrayCourses)) {
+          return res.status(400).send({
+            error: 'A menu must include one course from each category or at least three of them',
+          });
+        }
+
+        const macronutrients = nutritionalComposition(arrayCourses);
+        const newData = {
+          carboHydrates: macronutrients[0],
+          proteins: macronutrients[1],
+          lipids: macronutrients[2],
+          courses: arrayCourses,
+          foodGroupList: getFoodList(arrayCourses),
+          price: calculatePrice(arrayCourses),
+        };
+        Object.assign(menuObject, newData);
+      }
+
+      try {
+        const menu = await Menu.findOneAndUpdate({name: req.query.name.toString()}, menuObject, {
+          new: true,
+        });
+        if (menu === null) {
+          return res.status(404).send({
+            error: 'The menu has not been found',
+          });
+        } else {
+          return res.send(menu);
         }
       } catch (error) {
         return res.status(400).send(error);
