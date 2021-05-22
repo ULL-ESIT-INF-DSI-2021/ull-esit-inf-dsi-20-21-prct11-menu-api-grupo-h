@@ -1,6 +1,8 @@
 import {connect} from 'mongoose';
 
-connect('mongodb://127.0.0.1:27017/nutritional-information', {
+const mongodbURL = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/nutritional-information';
+
+connect(mongodbURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
