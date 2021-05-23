@@ -1073,7 +1073,8 @@ Si introducimos un ingrediente que no se encuentra en la base de datos, se infor
 
 En el caso del menú, se puede observar como sólo se indican las propiedades necesarias a añadir, como en el caso de los platos, dado que las otras propiedades se calculan a través de los valores dados o simplemente al trabajar con los id de los platos, ya no haría falta colocar toda la información del plato al estar relacionado dicho id con la base de datos del plato.
 
- ### GET
+
+### GET
 
 * Petición HTTP GET para un ingrediente:
 
