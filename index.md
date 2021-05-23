@@ -1027,3 +1027,113 @@ En el **fichero menus.ts** la primera función que encontramos es `validate()` c
 En este fichero primero se importan todos los routers que hemos definido, y registramos cada uno de estos routers en la aplicación empleando el método app.use().
 
 Con esta organización de directorios conseguimos que la aplicación sea mucho más legible y modular, además que el mantenimiento es más sencillo.
+
+## 4. Despliegue y ejemplos de funcionamiento:
+
+Hasta este momento, se ha desplegado la API localmente, empleando el servidor de MongoDB local. Sin embargo, ahora vamos a desplegar la API en **Heroku** para lo que es necesario disponer de una base de datos desplegada en la nube. Esto lo hemos conseguido creando un clúster en **MongoDB Atlas**, y tras ello hemos llevado a cabo el despliegue en Heroku.
+
+Ahora vamos a mostrar una serie de ejemplos con cada de las peticiones HTTP que hemos implementado:
+
+**POST**
+
+* Petición HTTP POST correcta para un ingrediente:
+
+![POST ingrediente](img/http_post_ingredient_correct.png)
+
+En este caso, para poder insertar un nuevo ingrediente, podemos observar que hemos especificado las propiedades correspondientes al elemento a añadir. 
+
+* Petición HTTP POST incorrecta para un ingrediente:
+
+![POST ingrediente error](img/http_post_ingredient_error.png)
+
+
+Si algunas de estas propiedades no se especifica, el programa mandará un error al cliente. Como en este ejemplo, sucede un error dado que no se ha indicado la propiedad `type` en la estructura.
+
+* Petición HTTP POST correcta para un plato:
+
+![POST plato](img/http_post_courses_correct.png)
+
+Como se puede observar en la petición `HTTP POST` se indican las propiedades necesarias para coincidir con el esquema definido para los platos. Cabe destacar que solamente hemos tenido que indicar el nombre de los ingredientes y no toda la información de estos, lo que es posible gracias a que trabajamos con los id y obtenemos los ingredientes de la propia base de datos.
+
+* Petición HTTP POST incorrecta para un plato:
+
+![POST plato error](img/http_post_courses_error.png)
+
+Si introducimos un ingrediente que no se encuentra en la base de datos, se informa del error al cliente.
+
+* Petición HTTP POST correcta para un menú:
+
+![POST menu](img/http_post_menu.png)
+
+En el caso del menú, se puede observar como sólo se indican las propiedades necesarias a añadir, como en el caso de los platos, dado que las otras propiedades se calculan a través de los valores dados o simplemente al trabajar con los id de los platos, ya no haría falta colocar toda la información del plato al estar relacionado dicho id con la base de datos del plato.
+
+**GET**
+
+* Petición HTTP GET para un ingrediente:
+
+![GET ingrediente](img/http_get_ingredient.png)
+
+En este caso, se muestra toda la información para el ingrediente cuyo nombre se ha especificado en la petición.
+
+En el caso de los id se obtendría el mismo resultado pero indicando en la petición lo siguiente: `/ingredients/valor del id`
+
+* Petición HTTP GET para un plato:
+
+![GET plato](img/http_get_course.png)
+
+Como se puede observar, a pesar de que en los platos se almacenan los id de los ingredientes, al hacer el get se obtiene toda la información de estos, lo que es posible como ya se ha comentado gracias al método `populate()`.
+
+En el caso de los id se obtendría el mismo resultado pero indicando en la petición lo siguiente: `/courses/valor del id`
+
+* Petición HTTP GET para un menú:
+
+![GET menu](img/http_get_menu_peticion.png)
+
+![GET menu](img/http_get_menu_resultado_1.png)
+
+![GET menu](img/http_get_menu_resultado_2.png)
+
+![GET menu](img/http_get_menu_resultado_3.png)
+
+Ahora se muestra la información completa del menú y de todos los platos que lo forman.
+
+En el caso de los id se obtendría el mismo resultado pero indicando en la petición lo siguiente:`/menus/valor del id`
+
+
+**PATCH**
+
+En este caso, al realizar una petición HTTP PATCH, seguimos la misma estructura en todos los casos donde es necesario pasar por parámetro el nombre del ingrediente, plato o menú. Además, de permitir modificar aquellos campos que hemos visto en la estructura de los HTTP GET correspondientes.
+
+* Petición HTTP PATCH para un ingrediente:
+
+![PATCH ingrediente](img/http_patch_ingredient.png)
+
+* Petición HTTP PATCH para un plato:
+
+![PATCH plato](img/http_patch_course.png)
+
+* Petición HTTP PATCH para un menú:
+
+![PATCH menu](img/http_patch_menu.png)
+
+**DELETE**
+
+A continuación, se realizan los HTTP DELETE correspondientes para cada uno de los casos dado que la implementación de código entre ellos es similar. Simplemente, podemos observar que se especifica la ruta necesaria dependiendo de si es un ingrediente, plato o menú y como parámetro, el nombre del elemento a eliminar.
+
+* Petición HTTP DELETE para un menú:
+
+![DELETE menu](img/http_delete_menu.png)
+
+* Petición HTTP DELETE para un plato:
+
+![DELETE plato](img/http_delete_course.png)
+
+* Petición HTTP DELETE para un ingrediente:
+
+![DELETE ingrediente](img/http_delete_ingredient.png)
+
+La URL de conexión al clúster de **MongoDB Atlas** es la siguiente:
+
+`mongodb+srv://grupo-h:ULL-DSI-grupo-h-21@cluster0.9yclc.mongodb.net/nutritional-information?retryWrites=true&w=majority`
+
+
