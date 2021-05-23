@@ -10,7 +10,7 @@
 
 ## 1. Introducción
 
-En este informe se muestra y explica la implementación de la **API**, haciendo uso de **Node/Express**, que permite realizar las operaciones de creación, lectura, modificación y borrado de ingredientes, platos y menús.
+En este informe se muestra y se explica la implementación de la **API**, haciendo uso de **Node/Express**, que permite realizar las operaciones de creación, lectura, modificación y borrado de ingredientes, platos y menús.
 
 ## 2. Objetivos
 
@@ -148,7 +148,7 @@ Cabe destacar que cada una de estas propiedades del esquema, tiene las siguiente
  
 * `type` define el tipo de cada propiedad.
 * `required` permite especificar que una propiedad del esquema tenga que especificarse obligatoriamente.
-* `trim` que permite eliminar espacios no necesarios al principio y final de cada cadena de caracteres.
+* `trim` permite eliminar espacios no necesarios al principio y final de cada cadena de caracteres.
 
 Por último, tenemos la opción `unique` que solo está habilitada en el nombre del alimento ya que de esta forma, evitamos que un ingrediente esté duplicado en nuestra base de datos.
 
@@ -367,7 +367,7 @@ Finalmente, definimos **Menu** que apunta a un objeto `Model<MenuInterface>`, a 
 export const Menu = model<MenuInterface>('Menu', MenuSchema);
 ```
 
-#### 3.3. Directorio Routers
+### 3.3. Directorio Routers
 
 Con el fin de ganar modularidad, hemos creado este directorio el cual integrará los ficheros en los que se realizarán las diferentes peticiones **HTTP**(**GET**, **POST**, **PATCH** y **DELETE**) para los ingredientes, platos y menús. Además incluirá el fichero `default.ts` cuyo contenido se explicará a continuación.
 
@@ -573,7 +573,9 @@ getRouter.get('/courses', async (req, res) => {
 });
 ```
 
-En primer lugar, comprobamos si la petición realizada en la ruta `/courses` contiene una query string en la que exista una clave denominada `name`. En caso afirmativo, nuestro filtro de búsqueda consistirá en un objeto cuya propiedad name tomará el valor asignado a la clave name de la query string. A continuación, utilizamos el método `findOne()` que nos permite realizar una búsqueda del plato. Como ya se ha comentado, en la colección `courses` guardamos los id de los ingredientes, por lo tanto si queremos mostrar la información completa de los ingredientes y no solo sus id, hay que emplear el método `populate()`, para hacer que la ruta `path: “ingredients”`, que hace referencia a la propiedad `ingredients` del plato, se sustituya por la información almacenada en la base de datos para los ingredientes con esos id. En caso de que no exista dicho plato en la base de datos, se hará uso del estado 404. Si ocurre un error inesperad, se mostrará el error de estado 500 que indica que el servidor encontró una condición inesperada que le impidió cumplir con la solicitud. Si no ocurre ningún error entonces se envía la información del plato al cliente.
+En primer lugar, comprobamos si la petición realizada en la ruta `/courses` contiene una query string en la que exista una clave denominada `name`. En caso afirmativo, nuestro filtro de búsqueda consistirá en un objeto cuya propiedad name tomará el valor asignado a la clave name de la query string. A continuación, utilizamos el método `findOne()` que nos permite realizar una búsqueda del plato. Como ya se ha comentado, en la colección `courses` guardamos los id de los ingredientes, por lo tanto si queremos mostrar la información completa de los ingredientes y no solo sus id, hay que emplear el método `populate()`, para hacer que la ruta `path: “ingredients”`, que hace referencia a la propiedad `ingredients` del plato, se sustituya por la información almacenada en la base de datos para los ingredientes con esos id. En caso de que no exista dicho plato en la base de datos, se hará uso del estado 404. Si ocurre un error inesperado, se mostrará el error de estado 500 que indica que el servidor encontró una condición inesperada que le impidió cumplir con la solicitud. Si no ocurre ningún error entonces se envía la información del plato al cliente.
+
+### Get con id del plato
 
 ```ts
 getRouter.get('/courses/:id', async (req, res) => {
@@ -595,7 +597,7 @@ getRouter.get('/courses/:id', async (req, res) => {
 });
 ```
 
-En este caso, tenemos el código de la petición HTPP GET en base al id, donde en vez de pasarle el nombre del plato, le pasamos el id correspondiente y hacemos uso del req.params.id y findById explicados anteriormente.
+En este caso, tenemos el código de la petición HTPP GET en base al id, donde en vez de pasarle el nombre del plato, le pasamos el id correspondiente y hacemos uso del `req.params.id` y `findById()` explicados anteriormente.
 
 ### POST
 
@@ -645,9 +647,11 @@ postRouter.post('/courses', async (req, res) => {
 });
 ```
 
-Como hemos explicado anteriormente, el cuerpo de la petición ha sido parseado en un objeto JSON, por lo que principalmente comprobamos que se han pasado todas las propiedades correspondientes a dicho objeto y además, comprobamos que el tamaño del array de ingredientes sea igual al tamaño de array de cantidades de los respectivos ingredientes, si no se cumplen dichas condiciones se mostrará un mensaje de estado 400 con un cadena de error específica. Después, a través de un bucle for, se recorre el array de los ingredientes del plato, colocamos como filtro el nombre de cada uno de estos ingredientes y mediante la función findOne() buscamos si el ingrediente que se recorre se encuentra en la base de datos, si es así lo introducimos en un nuevo array `arrayIngredients` y en caso de encontrar un ingrediente que no esté, mostramos una salida de error de estado 404. Seguidamente, creamos una estructura que corresponde a la estructura que almacenaremos en la base de datos y rellenamos los campos correspondientes con los datos que se nos da en la solicitud y los datos de los cuales se necesita la realización de ciertos cálculos, como es el precio total, el grupo predominante y los macronutrientes. Finalmente, creamos un nuevo documento del modelo `Course` y le pasamos la estructura nueva que rellenamos, la cual guardamos en la base de datos con el save().
+Como hemos explicado anteriormente, el cuerpo de la petición ha sido parseado en un objeto JSON, por lo que principalmente comprobamos que se han pasado todas las propiedades correspondientes a dicho objeto y además, comprobamos que el tamaño del array de ingredientes sea igual al tamaño de array de cantidades de los respectivos ingredientes, si no se cumplen dichas condiciones se mostrará un mensaje de estado 400 con un cadena de error específica. Después, a través de un bucle for, se recorre el array de los ingredientes del plato, colocamos como filtro el nombre de cada uno de estos ingredientes y mediante la función `findOne()` buscamos si el ingrediente que se recorre se encuentra en la base de datos, si es así lo introducimos en un nuevo array `arrayIngredients` y en caso de encontrar un ingrediente que no esté, mostramos una salida de error de estado 404. Seguidamente, creamos una estructura que corresponde a la estructura que almacenaremos en la base de datos y rellenamos los campos correspondientes con los datos que se nos da en la solicitud y los datos de los cuales se necesita la realización de ciertos cálculos, como es el **precio total**, el **grupo predominante** y los **macronutrientes**. Finalmente, creamos un nuevo documento del modelo `Course` y le pasamos la estructura nueva que rellenamos, la cual guardamos en la base de datos con el `save()`.
 
 ### DELETE
+
+### Delete con nombre del plato
 
 ```ts
 deleteRouter.delete('/courses', async (req, res) => {
@@ -671,7 +675,9 @@ deleteRouter.delete('/courses', async (req, res) => {
 });
 ```
 
-En primer lugar, se comprueba si la petición incluye una query string con una clave name, es decir, si se especifica en la petición el nombre del plato que se desee borrar. En caso de que no se haya especificado, enviamos un estado 400 de vuelta al cliente. En caso de éxito, utilizamos el método `findOneAndDelete` que nos permite buscar el plato por el nombre y una vez encontrado, eliminarlo. En caso de que el nombre del plato introducido no exista en la base de datos, se mandará un estado de error de 404 al cliente. Si se elimina el plato correctamente, se le enviará dicho plato como respuesta al cliente.
+En primer lugar, se comprueba si la petición incluye una query string con una clave name, es decir, si se especifica en la petición el nombre del plato que se desee borrar. En caso de que no se haya especificado, enviamos un estado 400 de vuelta al cliente. En caso de éxito, utilizamos el método `findOneAndDelete()` que nos permite buscar el plato por el nombre y una vez encontrado, eliminarlo. En caso de que el nombre del plato introducido no exista en la base de datos, se mandará un estado de error de 404 al cliente. Si se elimina el plato correctamente, se le enviará dicho plato como respuesta al cliente.
+
+### Delete con id del plato
 
 ```ts
 deleteRouter.delete('/courses/:id', async (req, res) => {
@@ -689,7 +695,7 @@ deleteRouter.delete('/courses/:id', async (req, res) => {
 });
 ```
 
-Además, también contamos con el código para la petición HTTP DELETE donde se especifica el id del plato que es similar a lo explicado anteriormente con las diferencias que ya han sido mencionadas respecto al uso de `req.params.id` y `findByIdAndDelete`.
+En este caso, las únicas diferencias respecto al anterior DELETE es que ahora se especifica el id del plato en vez del nombre y se hace uso de `req.params.id` y `findByIdAndDelete` explicados anteriormente.
 
 ### PATCH
 
@@ -777,9 +783,9 @@ Como ya hemos mencionado anteriormente, lo primero que se hace es comprobar si l
 
 El array `actualUpdates` contendrá aquellos nombres cuyos campos se quieren actualizar, los cuales vienen especificados en el cuerpo de la petición. isValidUpdate hará uso del método every para comprobar que todos los campos que se quieren actualizar están en el listado del array de campos permitidos a actualizar `allowedUpdates`. En caso contrario, enviará un estado de error 400 al cliente. A continuación, se realizan dos comprobaciones, donde el primer bloque de if comprueba que si en la petición se ha especificado los ingredientes pero no sus cantidades, o al inverso si no se ha especificado los ingredientes pero sí sus cantidades, este devolverá un error de estado 400 por falta de parámetros dado que si se desea añadir ingredientes o cantidades, estos deben modificarse a la vez. El siguiente bloque de if comprueba que el tamaño del array de ingrediente y el tamaño del array de cantidades sean iguales debido a que para cada ingrediente existirá una cantidad determinada. En caso de que no se cumpla, se devuelve un estado de error 400.
 
-Posteriormente, se recorre el array de los ingredientes del plato, y mediante la función findOne() se busca si el ingrediente que recorre el for se encuentra en la base de datos, si es así se introduce en un nuevo array `arrayIngredients` y en caso de encontrar un ingrediente que no esté, muestra una salida de error. 
+Posteriormente, se recorre el array de los ingredientes del plato, y mediante la función `findOne()` se busca si el ingrediente que recorre el for se encuentra en la base de datos, si es así se introduce en un nuevo array `arrayIngredients` y en caso de encontrar un ingrediente que no esté, muestra una salida de error. 
 
-Seguidamente, se crea el objeto `newData` y asignamos valores a sus propiedades empleando las funciones `calculateMacronutrients`, `predominantGroup` y `totalPrice`. Con ayuda del assign(), fusionamos en `courseObject` las propiedades de dicho objeto a modificador especificados en la petición y la estructura de datos anteriormente rellanada para finalmente tener una estructura del plato completa, la cual enviaremos al `findOneAndUpdate()` y este llevará a cabo la modificación correspondiente, si se produce algún error se envía al cliente el código de estado 404, si no se produce ningún error, se envía el plato actualizado al cliente.
+Seguidamente, se crea el objeto `newData` y asignamos valores a sus propiedades empleando las funciones `calculateMacronutrients`, `predominantGroup` y `totalPrice`. Con ayuda del `assign()`, fusionamos en `courseObject` las propiedades que se desean modificar en la petición y la estructura de datos anteriormente rellanada para finalmente tener una estructura del plato completa, la cual enviaremos al `findOneAndUpdate()` y este llevará a cabo la modificación correspondiente, si se produce algún error se envía al cliente el código de estado 404, si no se produce ningún error, se envía el plato actualizado al cliente.
 
 ### 3.3.4. Operaciones HTTP sobre los menús
 
@@ -1061,7 +1067,7 @@ Como se puede observar en la petición `HTTP POST` se indican las propiedades ne
 
 Si introducimos un ingrediente que no se encuentra en la base de datos, se informa del error al cliente.
 
-* Petición HTTP POST correcta para un menú:
+* Petición HTTP POST para un menú:
 
 ![POST menu](img/http_post_menu.png)
 
@@ -1083,7 +1089,7 @@ En el caso de los id se obtendría el mismo resultado pero indicando en la petic
 
 Como se puede observar, a pesar de que en los platos se almacenan los id de los ingredientes, al hacer el get se obtiene toda la información de estos, lo que es posible como ya se ha comentado gracias al método `populate()`.
 
-En el caso de los id se obtendría el mismo resultado pero indicando en la petición lo siguiente: `/courses/valor del id`
+En el caso de los id se obtendría el mismo resultado pero indicando en la petición lo siguiente: `/courses/valor del id`.
 
 * Petición HTTP GET para un menú:
 
