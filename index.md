@@ -6,3 +6,7 @@
 * Alberto Mendoza Rodríguez (alu0101217741)
 * Sandro Jesús Socas Méndez (alu0101208770)
 * Joel Aday Dorta Hernández (alu0100987584)
+
+## 1. Introducción
+
+En este informe se muestra y explica la implementación de la **API**, haciendo uso de **Node/Express**, que permite realizar las operaciones de creación, lectura, modificación y borrado de ingredientes, platos y menús.
