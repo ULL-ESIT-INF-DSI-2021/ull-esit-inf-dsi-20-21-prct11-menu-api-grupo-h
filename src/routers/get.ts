@@ -4,9 +4,14 @@ import {Course} from '../models/coursesModel';
 import {Menu} from '../models/menusModel';
 import '../db/mongoose';
 
+/**
+ * Router object is created that will allow us to define routes.
+ */
 export const getRouter = express.Router();
 
-// Ingredients by name
+/**
+ * An ingredient information is obtained through the name.
+ */
 getRouter.get('/ingredients', async (req, res) => {
   const filter = req.query.name?{name: req.query.name.toString()}:{};
 
@@ -25,7 +30,9 @@ getRouter.get('/ingredients', async (req, res) => {
   }
 });
 
-// Ingredients by ID
+/**
+ * An ingredient information is obtained through the ID.
+ */
 getRouter.get('/ingredients/:id', async (req, res) => {
   try {
     const ingredient = await Ingredient.findById(req.params.id);
@@ -42,7 +49,9 @@ getRouter.get('/ingredients/:id', async (req, res) => {
   }
 });
 
-// Courses by name
+/**
+ * A course information is obtained through the name.
+ */
 getRouter.get('/courses', async (req, res) => {
   const filter = req.query.name?{name: req.query.name.toString()}:{};
 
@@ -63,7 +72,9 @@ getRouter.get('/courses', async (req, res) => {
   }
 });
 
-// Courses by ID
+/**
+ * A course information is obtained through the ID.
+ */
 getRouter.get('/courses/:id', async (req, res) => {
   try {
     const course = await Course.findById(req.params.id).populate({
@@ -82,7 +93,9 @@ getRouter.get('/courses/:id', async (req, res) => {
   }
 });
 
-// Menus by name
+/**
+ * A menu information is obtained through the name.
+ */
 getRouter.get('/menus', async (req, res) => {
   const filter = req.query.name?{name: req.query.name.toString()}:{};
 
@@ -106,7 +119,9 @@ getRouter.get('/menus', async (req, res) => {
   }
 });
 
-// Menus by ID
+/**
+ * A menu information is obtained through the ID.
+ */
 getRouter.get('/menus/:id', async (req, res) => {
   try {
     const menu = await Menu.findById(req.params.id).populate({

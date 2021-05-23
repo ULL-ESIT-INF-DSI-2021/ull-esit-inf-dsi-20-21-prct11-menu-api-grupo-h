@@ -7,10 +7,14 @@ import {nutritionalComposition, getFoodList, calculatePrice, validate} from '../
 import {Menu} from '../models/menusModel';
 import '../db/mongoose';
 
-
+/**
+ * Router object is created that will allow us to define routes
+ */
 export const patchRouter = express.Router();
 
-// Ingredients by name
+/**
+ * The content of an ingredient in the database is edited
+ */
 patchRouter.patch('/ingredients', async (req, res) => {
   if (!req.query.name) {
     return res.status(400).send({
@@ -45,7 +49,9 @@ patchRouter.patch('/ingredients', async (req, res) => {
   }
 });
 
-// Courses by name
+/**
+ * The content of a course in the database is edited
+ */
 patchRouter.patch('/courses', async (req, res) => {
   if (!req.query.name) {
     return res.status(400).send({
@@ -119,7 +125,9 @@ patchRouter.patch('/courses', async (req, res) => {
   }
 });
 
-// Menus by name
+/**
+ * The content of a menu in the database is edited
+ */
 patchRouter.patch('/menus', async (req, res) => {
   if (!req.query.name) {
     return res.status(400).send({

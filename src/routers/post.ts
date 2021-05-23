@@ -6,9 +6,14 @@ import {nutritionalComposition, getFoodList, calculatePrice, validate} from '../
 import {Menu} from '../models/menusModel';
 import '../db/mongoose';
 
+/**
+ * Router object is created that will allow us to define routes
+ */
 export const postRouter = express.Router();
 
-// Ingredients by name
+/**
+ * An ingredient is added to the database
+ */
 postRouter.post('/ingredients', async (req, res) => {
   const ingredient = new Ingredient(req.body);
   try {
@@ -19,7 +24,9 @@ postRouter.post('/ingredients', async (req, res) => {
   }
 });
 
-// Courses by name
+/**
+ * A course is added to the database
+ */
 postRouter.post('/courses', async (req, res) => {
   const courseObject = req.body;
   if (!courseObject.name || !courseObject.ingredients || !courseObject.quantity || !courseObject.type ||
@@ -64,7 +71,9 @@ postRouter.post('/courses', async (req, res) => {
   }
 });
 
-// Menus by name
+/**
+ * A menu is added to the database
+ */
 postRouter.post('/menus', async (req, res) => {
   const menuObject = req.body;
   if (!menuObject.name || !menuObject.courses) {

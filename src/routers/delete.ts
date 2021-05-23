@@ -4,9 +4,14 @@ import {Course} from '../models/coursesModel';
 import {Menu} from '../models/menusModel';
 import '../db/mongoose';
 
+/**
+ * Router object is created that will allow us to define routes.
+ */
 export const deleteRouter = express.Router();
 
-// Ingredients by name
+/**
+ * An ingredient is removed from the database using the received name.
+ */
 deleteRouter.delete('/ingredients', async (req, res) => {
   if (!req.query.name) {
     return res.status(400).send({
@@ -29,7 +34,9 @@ deleteRouter.delete('/ingredients', async (req, res) => {
   }
 });
 
-// Ingredients by ID
+/**
+ * An ingredient is removed from the database using the received ID.
+ */
 deleteRouter.delete('/ingredients/:id', async (req, res) => {
   try {
     const ingredient = await Ingredient.findByIdAndDelete(req.params.id);
@@ -44,7 +51,9 @@ deleteRouter.delete('/ingredients/:id', async (req, res) => {
   }
 });
 
-// Courses by name
+/**
+ * A course is removed from the database using the received name.
+ */
 deleteRouter.delete('/courses', async (req, res) => {
   if (!req.query.name) {
     return res.status(400).send({
@@ -65,7 +74,9 @@ deleteRouter.delete('/courses', async (req, res) => {
   }
 });
 
-// Courses by ID
+/**
+ * A course is removed from the database using the received ID.
+ */
 deleteRouter.delete('/courses/:id', async (req, res) => {
   try {
     const course = await Course.findByIdAndDelete(req.params.id);
@@ -80,7 +91,9 @@ deleteRouter.delete('/courses/:id', async (req, res) => {
   }
 });
 
-// Menus by name
+/**
+ * A menu is removed from the database using the received name.
+ */
 deleteRouter.delete('/menus', async (req, res) => {
   if (!req.query.name) {
     return res.status(400).send({
@@ -100,7 +113,9 @@ deleteRouter.delete('/menus', async (req, res) => {
   }
 });
 
-// Menus by ID
+/**
+ * A menu is removed from the database using the received ID.
+ */
 deleteRouter.delete('/menus/:id', async (req, res) => {
   try {
     const menu = await Menu.findByIdAndDelete(req.params.id);

@@ -1,6 +1,9 @@
 import {Document, Schema, model} from 'mongoose';
 import {foodGroup} from './ingredientsModel';
 
+/**
+ * Structure that defines the form that the documents will take.
+ */
 export interface MenuInterface extends Document {
   name: string,
   carboHydrates: number,
@@ -13,6 +16,9 @@ export interface MenuInterface extends Document {
   price: number
 }
 
+/**
+ * Schema that contains the properties that the documents to be inserted in the collections must have.
+ */
 const MenuSchema = new Schema({
   name: {
     type: String,
@@ -74,4 +80,7 @@ const MenuSchema = new Schema({
   },
 });
 
+/**
+ * Menu Model.
+ */
 export const Menu = model<MenuInterface>('Menu', MenuSchema);

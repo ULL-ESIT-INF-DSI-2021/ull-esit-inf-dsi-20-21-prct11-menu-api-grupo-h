@@ -1,7 +1,13 @@
 import {Document, Schema, model} from 'mongoose';
 
-export type plateCategory = 'Starter' | 'First' | 'Second' | 'Dessert';
+/**
+ * Categories of the different courses.
+ */
+export type courseCategory = 'Starter' | 'First' | 'Second' | 'Dessert';
 
+/**
+ * Structure that defines the form that the documents will take.
+ */
 export interface CourseInterface extends Document {
   name: string,
   carboHydrates: number,
@@ -13,9 +19,12 @@ export interface CourseInterface extends Document {
     id_: string,
   }],
   quantity: number[],
-  type: plateCategory,
+  type: courseCategory,
 }
 
+/**
+ * Schema that contains the properties that the documents to be inserted in the collections must have.
+ */
 export const CourseSchema = new Schema({
   name: {
     type: String,
@@ -84,4 +93,7 @@ export const CourseSchema = new Schema({
   },
 });
 
+/**
+ * Course model.
+ */
 export const Course = model<CourseInterface>('Course', CourseSchema);

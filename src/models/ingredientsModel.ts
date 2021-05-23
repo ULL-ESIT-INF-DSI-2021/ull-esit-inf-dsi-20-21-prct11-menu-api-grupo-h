@@ -1,5 +1,8 @@
 import {Document, Schema, model} from 'mongoose';
 
+/**
+ * Structure that defines the form that the documents will take.
+ */
 export type foodGroup = 'Proteins' | 'Vegetables' | 'Dairy' | 'Cereals' | 'Fruits';
 
 export interface IngredientInterface extends Document {
@@ -12,6 +15,9 @@ export interface IngredientInterface extends Document {
   type: foodGroup,
 }
 
+/**
+ * Schema that contains the properties that the documents to be inserted in the collections must have.
+ */
 export const IngredientSchema = new Schema({
   name: {
     type: String,
@@ -68,4 +74,7 @@ export const IngredientSchema = new Schema({
   },
 });
 
+/**
+ * Ingredient Model.
+ */
 export const Ingredient = model<IngredientInterface>('Ingredient', IngredientSchema);
