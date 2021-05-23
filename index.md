@@ -12,7 +12,7 @@
 
 En este informe se muestra y explica la implementación de la **API**, haciendo uso de **Node/Express**, que permite realizar las operaciones de creación, lectura, modificación y borrado de ingredientes, platos y menús.
 
-## 2.Objetivos
+## 2. Objetivos
 
 Esta práctica tiene como objetivos:
 
@@ -21,13 +21,13 @@ Esta práctica tiene como objetivos:
 * Aprender el uso de Mongoose.
 * Aprender a desplegar el API en Heroku.
 
-### 3. Implementación de la API
+## 3. Implementación de la API
 
 En primer lugar, para poder realizar esta práctica se debe llevar a cabo el uso de las distintas peticiones `HTTP`: `GET`, `POST`, `PATCH` y `DELETE` de Node/Express que permita llevar las funcionalidades principales de ingredientes, platos y menús. También se hará uso de las bases de datos con **MongoDB**, la cual almacena los datos como documentos JSON y utilizaremos el **Moongose** para definir objetos a partir de esquemas donde podamos especificar las propiedades de dichos objetos. Además, podremos llevar a cabo la relación entre esquemas de las bases de datos para obtener una API más óptima que permita la actualización en las distintas bases de datos de aquellos elementos modificados. Finalmente, se llevará a cabo el código refactorizado correspondiente a la implementación de cada uno de los métodos HTTP que se quieren gestionar en la aplicación para conseguir una mayor modularidad.
 
 Cabe destacar que todo nuestro código fuente se encuentra almacenado en src organizado en los directorios db, models, routers, utilities y el fichero index.ts. A continuación, vamos a explicar el código de cada uno de estos directorios.
 
-#### 3.1. Directorio db
+### 3.1. Directorio db
 
 En este directorio almacenaremos el fichero mongoose.ts cuyo contenido se explicará a continuación.
 
@@ -50,11 +50,11 @@ En este fichero es donde almacenamos el código fuente que nos permite realizar 
 
 Para ello, en primer lugar usamos el **método connect de MongoClient**. Dicho método recibe, como primer argumento, la URL de conexión al servidor de MongoDB, la última parte de esta URL corresponde con el nombre de la base de datos, esta es, **nutritional-information**. Como segundo argumento tenemos un objeto con las opciones de conexión y como tercer argumento se indica un callback que hará que connect devuelva una promesa. Esto nos permite definir qué ocurrirá si la promesa se cumple, a través del manejador pasado a then donde mostramos por consola un mensaje de verificación de proceso, y lo que ocurrirá si la promesa se rompe, a través del manejador pasado a catch donde mostramos por consola un mensaje de error de proceso.
 
-#### 3.2.Directorio Models
+### 3.2. Directorio Models
 
 En cada fichero de este directorio, se definen tanto los esquemas donde se incluyen las propiedades de los documentos, como los modelos mongoose, para los ingredientes, platos y menús.
 
-**ingredientsModel.ts**
+### 3.2.1. ingredientsModel.ts
 
 En primer lugar se define el type **foodgroup** para establecer los diferentes grupos de alimentos al que puede pertenecer un ingrediente.
 
@@ -156,7 +156,7 @@ Además, tenemos los correspondientes `validate` en las propiedades **carboHydra
 
 Finalmente, exportamos la **variable Ingredient** que contiene el modelo apuntado por Ingredient, el cual nos va a permitir instanciar ingredientes que podrán ser insertados en la base de datos nutritional-information.
 
-**coursesModel.ts**
+### 3.2.2. coursesModel.ts
 
 En primer lugar se define el type **courseCategory** para diferenciar los platos por categorías. 
 
@@ -270,7 +270,7 @@ Finalmente, definimos **Course** que apunta a un objeto `Model<CourseInterface>`
 export const Course = model<CourseInterface>('Course', CourseSchema);
 ```
 
-**menusModel.ts**
+### 3.2.3. menusModel.ts
 
 Como en los ficheros anteriores, primero creamos la interfaz **CourseInterface** donde se definen las propiedades que deben incluir los documentos de los menús. 
 
@@ -367,11 +367,11 @@ Finalmente, definimos **Menu** que apunta a un objeto `Model<MenuInterface>`, a 
 export const Menu = model<MenuInterface>('Menu', MenuSchema);
 ```
 
-#### 3.3.Directorio Routers
+#### 3.3. Directorio Routers
 
 Con el fin de ganar modularidad, hemos creado este directorio el cual integrará los ficheros en los que se realizarán las diferentes peticiones **HTTP**(**GET**, **POST**, **PATCH** y **DELETE**) para los ingredientes, platos y menús. Además incluirá el fichero `default.ts` cuyo contenido se explicará a continuación.
 
-**Fichero default.ts**
+### 3.3.1. Fichero default.ts
 
 ```ts
 import * as express from 'express';
@@ -385,9 +385,9 @@ defaultRouter.all('*', (_, res) => {
 
 A través de la invocación a `express.Router()` obtendremos un objeto Router que nos permitirá definir rutas, en este caso definiremos uno por defecto. Teniendo en cuenta el uso de `all`, cualquiera que sea el método utilizado para llevar a cabo la petición, si la ruta especificada en dicha petición no se ha implementado, se enviará un estado 501 indicando que el servidor no admite la funcionalidad requerida para cumplir con la solicitud.
 
-**Operaciones HTTP sobre los ingredientes**
+### 3.3.2. Operaciones HTTP sobre los ingredientes
 
-**Get con el nombre del ingrediente**
+### GET con el nombre del ingrediente
 
 ```ts
 getRouter.get('/ingredients', async (req, res) => {
@@ -411,7 +411,7 @@ getRouter.get('/ingredients', async (req, res) => {
 
 Lo primero que hacemos es comprobar si la petición `HTTP GET` realizada en la ruta `/ingredients` contiene una query string donde exista una clave denominada `name`. Si es así, nuestro filtro de búsqueda consistirá en un objeto cuya propiedad name tomará el valor asignado a la clave name de la query string. En caso de que el alimento introducido no exista en la base de datos se hará uso del estado 404 para indicar que el ingrediente que se quiere obtener no se puede encontrar. En caso de que ocurra un error inesperado al buscar el alimento se utilizará el estado 500 indicando que el servidor encontró una condición inesperada que le impidió cumplir con la solicitud. Sin embargo, si la búsqueda se realiza correctamente, entonces enviamos la información del ingrediente al cliente.
 
-**Get con el id del ingrediente**
+### GET con el id del ingrediente
 
 ```ts
 getRouter.get('/ingredients/:id', async (req, res) => {
@@ -433,7 +433,7 @@ getRouter.get('/ingredients/:id', async (req, res) => {
 
 En este caso la ruta es diferente con respecto al anterior punto de acceso. Ahora se incluye la cadena `/:id` que permite que la URL de petición tenga un formato similar a lo siguiente `/ingredients/609c27f37f43986188e26478`, por lo que se puede especificar el identificador único de un ingrediente después de `/ingredients/`. En el manejador, accedemos al identificador empleando `req.params.id`. Además, se utiliza el método `findById` que permite buscar documentos por su identificador único. Si al buscar el ingrediente se produce algún error se informa al cliente con el código de estado adecuado, en otro caso se envía la información sobre el ingrediente.
 
-**Post**
+### POST
 
 ```ts
 postRouter.post('/ingredients', async (req, res) => {
@@ -449,7 +449,7 @@ postRouter.post('/ingredients', async (req, res) => {
 
 Para crear un alimento e insertarlo en nuestra base de datos, utilizaremos la petición `HTTP POST`.  Como hemos configurado el servidor para parsear el cuerpo de una petición como un objeto JSON, podemos instanciar un documento pasándole `req.body` directamente al modelo Ingredient. Si todo ha ido correctamente, utilizamos el estado 201 para indicar que la solicitud se ha cumplido y ha dado lugar a la creación de un recurso nuevo. En caso de de error, por ejemplo si no se ha especificado una propiedad del esquema del ingrediente, se utiliza el estado 400 para indicar que el servidor no puede procesar la solicitud debido a que la petición contiene algún error por parte del cliente.
 
-**Delete con el nombre del ingrediente**
+### DELETE con el nombre del ingrediente
 
 ```ts
 deleteRouter.delete('/ingredients', async (req, res) => {
@@ -477,7 +477,7 @@ deleteRouter.delete('/ingredients', async (req, res) => {
 
 Lo primero que se hará es comprobar si la petición incluye una query string con una clave `name`, es decir, si se especifica en la petición el nombre del ingrediente que se desea borrar. En caso de que no se incluya, enviamos un estado 400 de vuelta al cliente. En caso de éxito, utilizamos el método `findOneAndDelete` del modelo `Ingredient` para buscar el ingrediente por el nombre y eliminarlo. Si el nombre del ingrediente no existe se mandará un estado 404 al cliente. En caso de que si se haya encontrado y borrado el ingrediente, se le  enviará como respuesta al cliente.
 
-**Delete con el id del ingrediente**
+### DELETE con el id del ingrediente
 
 ```ts
 deleteRouter.delete('/ingredients/:id', async (req, res) => {
@@ -497,7 +497,7 @@ deleteRouter.delete('/ingredients/:id', async (req, res) => {
 
 En este caso, la únicas diferencias respecto a lo explicado anteriormente consiste en que ahora no tenemos que comprobar que nos pasan una query string con la petición, y además se emplea el método `findByIdAndDelete` en lugar del método `findOneAndDelete` para buscar y eliminar el ingrediente por el id.
 
-**patch**
+### PATCH
 
 ```ts
 patchRouter.patch('/ingredients', async (req, res) => {
@@ -547,9 +547,9 @@ Como hemos visto anteriormente, lo primero que se hará es comprobar si la petic
 
 El array `actualUpdates` contendrá los nombres de las propiedades del objeto apuntado por el cuerpo de la petición `req.body`, es decir, los nombres de los campos que se quieren actualizar, los cuales vienen especificados en el cuerpo de la petición. `isValidUpdate` hará uso del método `every` para comprobar que todos los campos que se desean actualizar están en la lista nombrada anteriormente. En caso de que no sea así enviará un estado de error 400 al cliente. Si todo ha ido bien se hace uso del método `findOneAndUpdate` del modelo `Ingredients` para poder buscar y actualizar un ingrediente de la base de datos, el método recibirá como parámetros: el nombre del alimento, el cuerpo de la petición y además un objeto donde se han establecido las opciones `new` y `runValidators`. La opción `new` permitirá que después de la operación de actualización se tenga acceso al documento con la modificación realizada en vez de la versión anterior. La opción `runValidators` comprobará las validaciones que existen en el esquema de ingredientes. Si el alimento a buscar no ha sido encontrado se mandará un estado 404 al cliente. En otro caso, se envía el ingrediente actualizado.
 
-**Courses**
+### 3.3.3. Operaciones HTTP sobre los platos
 
-**Get con nombre del plato**
+### Get con nombre del plato
 
 ```ts
 getRouter.get('/courses', async (req, res) => {
@@ -597,7 +597,7 @@ getRouter.get('/courses/:id', async (req, res) => {
 
 En este caso, tenemos el código de la petición HTPP GET en base al id, donde en vez de pasarle el nombre del plato, le pasamos el id correspondiente y hacemos uso del req.params.id y findById explicados anteriormente.
 
-**Post**
+### POST
 
 ```ts
 postRouter.post('/courses', async (req, res) => {
@@ -647,7 +647,7 @@ postRouter.post('/courses', async (req, res) => {
 
 Como hemos explicado anteriormente, el cuerpo de la petición ha sido parseado en un objeto JSON, por lo que principalmente comprobamos que se han pasado todas las propiedades correspondientes a dicho objeto y además, comprobamos que el tamaño del array de ingredientes sea igual al tamaño de array de cantidades de los respectivos ingredientes, si no se cumplen dichas condiciones se mostrará un mensaje de estado 400 con un cadena de error específica. Después, a través de un bucle for, se recorre el array de los ingredientes del plato, colocamos como filtro el nombre de cada uno de estos ingredientes y mediante la función findOne() buscamos si el ingrediente que se recorre se encuentra en la base de datos, si es así lo introducimos en un nuevo array `arrayIngredients` y en caso de encontrar un ingrediente que no esté, mostramos una salida de error de estado 404. Seguidamente, creamos una estructura que corresponde a la estructura que almacenaremos en la base de datos y rellenamos los campos correspondientes con los datos que se nos da en la solicitud y los datos de los cuales se necesita la realización de ciertos cálculos, como es el precio total, el grupo predominante y los macronutrientes. Finalmente, creamos un nuevo documento del modelo `Course` y le pasamos la estructura nueva que rellenamos, la cual guardamos en la base de datos con el save().
 
-**Delete**
+### DELETE
 
 ```ts
 deleteRouter.delete('/courses', async (req, res) => {
@@ -691,7 +691,7 @@ deleteRouter.delete('/courses/:id', async (req, res) => {
 
 Además, también contamos con el código para la petición HTTP DELETE donde se especifica el id del plato que es similar a lo explicado anteriormente con las diferencias que ya han sido mencionadas respecto al uso de `req.params.id` y `findByIdAndDelete`.
 
-**patch**
+### PATCH
 
 ```ts
 patchRouter.patch('/courses', async (req, res) => {
@@ -781,9 +781,9 @@ Posteriormente, se recorre el array de los ingredientes del plato, y mediante la
 
 Seguidamente, se crea el objeto `newData` y asignamos valores a sus propiedades empleando las funciones `calculateMacronutrients`, `predominantGroup` y `totalPrice`. Con ayuda del assign(), fusionamos en `courseObject` las propiedades de dicho objeto a modificador especificados en la petición y la estructura de datos anteriormente rellanada para finalmente tener una estructura del plato completa, la cual enviaremos al `findOneAndUpdate()` y este llevará a cabo la modificación correspondiente, si se produce algún error se envía al cliente el código de estado 404, si no se produce ningún error, se envía el plato actualizado al cliente.
 
-**Menu**
+### 3.3.4. Operaciones HTTP sobre los menús
 
-**Get con nombre del menú**
+### GET con nombre del menú
 
 ```ts
 getRouter.get('/menus', async (req, res) => {
@@ -812,7 +812,7 @@ getRouter.get('/menus', async (req, res) => {
 
 Tal y como se ha hecho anteriormente se realiza la misma operación con menú, primero se comprueba si la petición `HTTP GET` realizada en la ruta `/menus` contiene una query string donde exista una clave denominada `name`. Si es así, nuestro filtro de búsqueda consistirá en un objeto cuya propiedad `name` tomará el valor asignado a la clave name de la query string. Ahora realizamos una búsqueda con el método `findOne()`, si el menú se encuentra, empleamos de nuevo el método `populate()` para que los id de los platos del menú se sustituyan por la información de la base de datos. A su vez, anidamos otro `populate()` para cambiar los id de los ingredientes por la información contenida en la colección `ingredients`. En caso de que el menú no exista se enviará al cliente el estado 404,  o si ocurre un error inesperado al realizar la petición el servidor enviará el estado 500. Sin embargo, si todo funciona correctamente se envía al cliente la información del menú.
 
-**Get con id del menú**
+### GET con id del menú
 
 ```ts
 getRouter.get('/menus/:id', async (req, res) => {
@@ -839,7 +839,7 @@ getRouter.get('/menus/:id', async (req, res) => {
 
 En este caso, el código es similar al explicado anteriormente, con la diferencia que se emplea el id del menú accediendo a `req.params.id`. Además, se utiliza el método `findById` para buscar el menú.
 
-**Post**
+### POST
 
 ```ts
 postRouter.post('/menus', async (req, res) => {
@@ -891,8 +891,7 @@ postRouter.post('/menus', async (req, res) => {
 
 En primer lugar, comprobamos que no faltan las propiedades `name` y `courses` en la petición `HTTP POST` realizada, si estas no se han indicado entonces se envía el código de estado 400 al cliente. A continuación, mediante un bucle `for` recorremos el array que contiene los nombres de los platos que hemos recibido en el cuerpo de la petición, y a través de la función `findOne()` comprobamos que estén en la base de datos, en caso afirmativo, lo insertamos en un nuevo array, mientras que en caso contrario, informamos de un error. Con esto conseguimos que en el cliente solamente sea necesario introducir el nombre de los platos y no toda la información sobre ellos, además como trabajamos con el contenido de la base de datos nos aseguramos que los ingredientes están actualizados y han sido validados correctamente por el esquema. Después, comprobamos que los platos introducidos en el array cumplen con los requisitos, es decir, incluye un plato de cada categoría o, al menos, tres de ellas, si no es así enviamos un error. Tras comprobar esto, creamos el objeto `correctMenu` que se va a almacenar en la base de datos. Una vez rellenado mediante las funciones necesarias como el cálculo del precio total, la lista de grupos de alimentos predominantes por plato y los valores que se nos indican en la petición, finalmente creamos un nuevo documento del modelo menú, para guardarlo en la colección correspondiente mediante `save()`.
 
-
-**Delete con el nombre del menú**
+### DELETE con el nombre del menú
 
 ```ts
 deleteRouter.delete('/menus', async (req, res) => {
@@ -917,7 +916,8 @@ deleteRouter.delete('/menus', async (req, res) => {
 
 En primer lugar, se comprueba si la petición incluye una query string con una clave `name`. En caso de que no se incluya, enviamos un estado 400 de vuelta al cliente. En caso de éxito, utilizamos el método `findOneAndDelete` del modelo Menu para poder buscar el menú por el nombre y eliminarlo. En caso de que el menú introducido no exista se mandará un estado 404 al cliente. Si se encuentra y elimina el menú, se le enviará como respuesta al cliente. 
 
-**Delete con el id del menú**
+### DELETE con el id del menú
+
 ```ts
 deleteRouter.delete('/menus/:id', async (req, res) => {
   try {
@@ -936,7 +936,7 @@ deleteRouter.delete('/menus/:id', async (req, res) => {
 
 El código para la petición `HTTP DELETE` empleando el id del menú es similar a lo explicado anteriormente con las diferencias que ya han sido mencionadas respecto al uso de `req.params.id` y `findByIdAndDelete`.
 
-**patch**
+### PATCH
 
 ```ts
 patchRouter.patch('/menus', async (req, res) => {
@@ -1014,7 +1014,7 @@ Primero se comprueba si la petición incluye una query string con una clave `nam
 
 Con el array `actualUpdates` y el método `every` se comprueba que todos los campos que se desean actualizar están en la lista nombrada anteriormente. En caso de que no sea así, se enviará un estado de error 400 al cliente. En caso de éxito, se recorre el array `menuObject.courses` recibido en el cuerpo de la petición y que incluye los nombres de los platos que se van a incluir en el menú, a través de la función `findOne()` comprobamos que estén en la base de datos, en caso afirmativo, lo insertamos en el array `arrayCourses`, mientras que en caso contrario, informamos de un error. Ahora validamos este array para comprobar que incluye un plato de cada categoría o, al menos, tres de ellas, si esto no se cumple se enviará un estado de error 400. A continuación, se crea el objeto `newData` y asignamos valores a sus propiedades empleando las funciones `nutritionalComposition`, `getFoodList` y `calculatePrice`. Con ayuda del assign(), fusionamos las propiedades de los datos a modificador especificados en la petición y la estructura de datos anteriormente rellanada para finalmente tener una estructura del menú al completo, la cual enviaremos al `findOneAndUpdate()` y este llevará a cabo la modificación correspondiente, si se produce algún error se envía al cliente el código de estado adecuado, pero si todo funciona correctamente se envía el menú actualizado.
 
-#### 3.4. Directorio Utilities
+### 3.4. Directorio Utilities
 
 En este directorio se incluyen los ficheros que almacenan las funciones que permiten realizar los cálculos solicitados en la práctica.
 
@@ -1022,19 +1022,19 @@ En el **fichero courses.ts** con la función `calculateMacronutrients()` se obti
 
 En el **fichero menus.ts** la primera función que encontramos es `validate()` con la que se comprueba que el menu incluye un plato de cada categoría o, al menos, tres de ellas. `nutritionalComposition()` se emplea para calcular la composición nutricional, `getFoodList()` devuelve el listado de grupos de alimentos por orden de aparición, y con `calculatePrice()` se obtiene el precio total del menu.
 
-#### 3.4. Fichero index
+### 3.5. Fichero index
 
 En este fichero primero se importan todos los routers que hemos definido, y registramos cada uno de estos routers en la aplicación empleando el método app.use().
 
 Con esta organización de directorios conseguimos que la aplicación sea mucho más legible y modular, además que el mantenimiento es más sencillo.
 
-## 4. Despliegue y ejemplos de funcionamiento:
+## 4. Despliegue y ejemplos de funcionamiento
 
 Hasta este momento, se ha desplegado la API localmente, empleando el servidor de MongoDB local. Sin embargo, ahora vamos a desplegar la API en **Heroku** para lo que es necesario disponer de una base de datos desplegada en la nube. Esto lo hemos conseguido creando un clúster en **MongoDB Atlas**, y tras ello hemos llevado a cabo el despliegue en Heroku.
 
 Ahora vamos a mostrar una serie de ejemplos con cada de las peticiones HTTP que hemos implementado:
 
-**POST**
+### POST
 
 * Petición HTTP POST correcta para un ingrediente:
 
@@ -1067,7 +1067,7 @@ Si introducimos un ingrediente que no se encuentra en la base de datos, se infor
 
 En el caso del menú, se puede observar como sólo se indican las propiedades necesarias a añadir, como en el caso de los platos, dado que las otras propiedades se calculan a través de los valores dados o simplemente al trabajar con los id de los platos, ya no haría falta colocar toda la información del plato al estar relacionado dicho id con la base de datos del plato.
 
-**GET**
+ ### GET
 
 * Petición HTTP GET para un ingrediente:
 
@@ -1099,8 +1099,7 @@ Ahora se muestra la información completa del menú y de todos los platos que lo
 
 En el caso de los id se obtendría el mismo resultado pero indicando en la petición lo siguiente:`/menus/valor del id`
 
-
-**PATCH**
+### PATCH
 
 En este caso, al realizar una petición HTTP PATCH, seguimos la misma estructura en todos los casos donde es necesario pasar por parámetro el nombre del ingrediente, plato o menú. Además, de permitir modificar aquellos campos que hemos visto en la estructura de los HTTP GET correspondientes.
 
@@ -1116,7 +1115,7 @@ En este caso, al realizar una petición HTTP PATCH, seguimos la misma estructura
 
 ![PATCH menu](img/http_patch_menu.png)
 
-**DELETE**
+### DELETE
 
 A continuación, se realizan los HTTP DELETE correspondientes para cada uno de los casos dado que la implementación de código entre ellos es similar. Simplemente, podemos observar que se especifica la ruta necesaria dependiendo de si es un ingrediente, plato o menú y como parámetro, el nombre del elemento a eliminar.
 
@@ -1136,4 +1135,11 @@ La URL de conexión al clúster de **MongoDB Atlas** es la siguiente:
 
 `mongodb+srv://grupo-h:ULL-DSI-grupo-h-21@cluster0.9yclc.mongodb.net/nutritional-information?retryWrites=true&w=majority`
 
+## 5. Conclusión
+
+En conclusión, esta práctica nos ha permitido trabajar con las distintas peticiones `HTTP`: `GET`, `POST`, `PATCH` y `DELETE`, adquiriendo los conocimientos necesarios sobre ellas para realizar la correcta implementación del código fuente. Además, hemos aprendido el manejo de bases de datos con **MongoDB**, la cual almacena los datos como documentos JSON. Por otro lado, con **Moongose** hemos comprendido la manera en la que se deben definir objetos a partir de esquemas donde podemos especificar propiedades para nuestros objetos. Además, nos hemos acercado aún más al mundo real llevando a cabo la relación entre distintos esquemas para tener una base de datos totalmente actualizada y de esta manera, cualquier elemento actualizado, se modificará en las demás bases de datos que tuviesen dicho elemento.
+
+En cuanto a la carga de trabajo, podríamos decir que ha sido la práctica con mayor carga de trabajo realizada, además que el nivel de dificultad al principio fue bastante alto pero conforme íbamos realizando los métodos HTTP, algunas implementaciones eran similares y por lo tanto, menos costosas. Además, cabe destacar que la división del trabajo por partes con los compañeros del grupo ha facilitado su elaboración. 
+
+Finalmente, podemos decir que estas prácticas grupales en relación a la práctica grupal 7 y esta, han sido quizá las prácticas más complejas de la asignatura y donde más conceptos hemos aprendido.
 
