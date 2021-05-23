@@ -1022,3 +1022,8 @@ En el **fichero courses.ts** con la función `calculateMacronutrients()` se obti
 
 En el **fichero menus.ts** la primera función que encontramos es `validate()` con la que se comprueba que el menu incluye un plato de cada categoría o, al menos, tres de ellas. `nutritionalComposition()` se emplea para calcular la composición nutricional, `getFoodList()` devuelve el listado de grupos de alimentos por orden de aparición, y con `calculatePrice()` se obtiene el precio total del menu.
 
+#### 3.4. Fichero index
+
+En este fichero primero se importan todos los routers que hemos definido, y registramos cada uno de estos routers en la aplicación empleando el método app.use().
+
+Con esta organización de directorios conseguimos que la aplicación sea mucho más legible y modular, además que el mantenimiento es más sencillo.
