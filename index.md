@@ -1013,3 +1013,12 @@ Primero se comprueba si la petición incluye una query string con una clave `nam
 * courses
 
 Con el array `actualUpdates` y el método `every` se comprueba que todos los campos que se desean actualizar están en la lista nombrada anteriormente. En caso de que no sea así, se enviará un estado de error 400 al cliente. En caso de éxito, se recorre el array `menuObject.courses` recibido en el cuerpo de la petición y que incluye los nombres de los platos que se van a incluir en el menú, a través de la función `findOne()` comprobamos que estén en la base de datos, en caso afirmativo, lo insertamos en el array `arrayCourses`, mientras que en caso contrario, informamos de un error. Ahora validamos este array para comprobar que incluye un plato de cada categoría o, al menos, tres de ellas, si esto no se cumple se enviará un estado de error 400. A continuación, se crea el objeto `newData` y asignamos valores a sus propiedades empleando las funciones `nutritionalComposition`, `getFoodList` y `calculatePrice`. Con ayuda del assign(), fusionamos las propiedades de los datos a modificador especificados en la petición y la estructura de datos anteriormente rellanada para finalmente tener una estructura del menú al completo, la cual enviaremos al `findOneAndUpdate()` y este llevará a cabo la modificación correspondiente, si se produce algún error se envía al cliente el código de estado adecuado, pero si todo funciona correctamente se envía el menú actualizado.
+
+#### 3.4. Directorio Utilities
+
+En este directorio se incluyen los ficheros que almacenan las funciones que permiten realizar los cálculos solicitados en la práctica.
+
+En el **fichero courses.ts** con la función `calculateMacronutrients()` se obtienen los datos acerca de la composición nutricional del plato, por su parte `predominantGroup()` indica cual es el grupo predominante en el plato, por último mediante `totalPrice()` se consigue el precio total.
+
+En el **fichero menus.ts** la primera función que encontramos es `validate()` con la que se comprueba que el menu incluye un plato de cada categoría o, al menos, tres de ellas. `nutritionalComposition()` se emplea para calcular la composición nutricional, `getFoodList()` devuelve el listado de grupos de alimentos por orden de aparición, y con `calculatePrice()` se obtiene el precio total del menu.
+
