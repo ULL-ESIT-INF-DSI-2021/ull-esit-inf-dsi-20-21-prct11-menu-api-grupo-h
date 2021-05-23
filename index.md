@@ -1143,3 +1143,12 @@ En cuanto a la carga de trabajo, podríamos decir que ha sido la práctica con m
 
 Finalmente, podemos decir que estas prácticas grupales en relación a la práctica grupal 7 y esta, han sido quizá las prácticas más complejas de la asignatura y donde más conceptos hemos aprendido.
 
+## 6. Bibliografía
+
+* [Documentación sobre MongoDB](https://www.mongodb.com/es)
+* [Documentación sobre Moongose](https://mongoosejs.com/)
+* [Múltiples populate](https://dev.to/paras594/how-to-use-populate-in-mongoose-node-js-mo0)
+* [Documentación sobre Heroku](https://www.heroku.com/)
+* [Códigos de estado HTTP](https://httpstatuses.com/)
+* [Apuntes de la asignatura](https://ull-esit-inf-dsi-2021.github.io/nodejs-theory/)
+* [Guión de la práctica 11](https://ull-esit-inf-dsi-2021.github.io/prct11-menu-api/)
