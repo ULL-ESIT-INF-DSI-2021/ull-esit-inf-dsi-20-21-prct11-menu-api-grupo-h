@@ -10,3 +10,12 @@
 ## 1. Introducción
 
 En este informe se muestra y explica la implementación de la **API**, haciendo uso de **Node/Express**, que permite realizar las operaciones de creación, lectura, modificación y borrado de ingredientes, platos y menús.
+
+## 2.Objetivos
+
+Esta práctica tiene como objetivos:
+
+* Aprender sobre el uso de Node/Express
+* Aprender el uso de MongoDB/MongoDB Atlas.
+* Aprender el uso de Mongoose.
+* Aprender a desplegar el API en Heroku.
